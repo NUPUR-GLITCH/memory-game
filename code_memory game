@@ -1,85 +1,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define S 4 
-void initializeBoard(int board[S][S]);
-void shuffleBoard(int board[S][S]);
-void printBoard(int board[S][S], int revealed[S][S]);
-int isMatch(int guess1[2], int guess2[2], int board[S][S]);
-int isBoardFull(int revealed[S][S]);
-int main() {
-int board[S][S];
-int revealed[S][S] = {0};
-int t = 0;
-int guess1[2], guess2[2];
-srand(time(0)); 
-initializeBoard(board);
-shuffleBoard(board);
-while (!isBoardFull(revealed)) {
-printBoard(board, revealed);
-printf("Turn %d: Enter the coordinates of the first card: ",t + 1);
-scanf("%d %d", &guess1[0], &guess1[1]);
-guess1[0]--; guess1[1]--; 
-printf("Enter the coordinates of the second card: ");
-scanf("%d %d", &guess2[0], &guess2[1]);
-guess2[0]--; guess2[1]--; 
-if (isMatch(guess1, guess2, board)) {
-printf("It's a match!\n");
-revealed[guess1[0]][guess1[1]] = 1;
-revealed[guess2[0]][guess2[1]] = 1;
-} else {
-printf("Not a match! Try again.\n");
-}
-t++;
-}
-printf("Congratulations! You've matched all pairs in %d turns.\n", t);
-return 0;
-}
-void initializeBoard(int board[S][S]) {
-int Pairs = (S * S) / 2;
-int count = 1;
-for (int i = 0; i < S; i++) {
-for (int j = 0; j < S; j++) {
-board[i][j] = (count <= Pairs) ? count : count - Pairs;
-if (j % 2 == 1) count++; 
+#include <conio.h>
+#define MAX_SEQUENCE 100
+void generateSequence(int sequence[], int length) {
+for (int i = 0; i < length; i++) {
+sequence[i] = rand() % 10; 
 }
 }
-}
-void shuffleBoard(int board[S][S]) {
-for (int i = 0; i < S; i++) {
-for (int j = 0; j < S; j++) {
-int r1 = rand() % S;
-int r2 = rand() % S;
-// Swap
-int temp = board[i][j];
-board[i][j] = board[r1][r2];
-board[r1][r2] = temp;
-}
-}
-}
-void printBoard(int board[S][S], int revealed[S][S]) {
-printf("Current Board:\n");
-for (int i = 0; i < S; i++) {
-for (int j = 0; j < S; j++) {
-if (revealed[i][j]) {
-printf("%d ", board[i][j]);
-} else {
-printf("X "); 
-}
+void displaySequence(int sequence[], int length) {
+printf("Remember this sequence:\n");
+for (int i = 0; i < length; i++) {
+printf("%d ", sequence[i]);
+fflush(stdout);
+_sleep(1000); 
 }
 printf("\n");
+_sleep(1000); 
+system("cls"); 
 }
-}
-int isMatch(int guess1[2], int guess2[2], int board[S][S]) {
-return board[guess1[0]][guess1[1]] == board[guess2[0]][guess2[1]];
-}
-int isBoardFull(int revealed[S][S]) {
-for (int i = 0; i < S; i++) {
-for (int j = 0; j < S; j++) {
-if (revealed[i][j] == 0) {
+int getUserInput(int sequence[], int length) {
+int input;
+printf("Enter the sequence:\n");
+for (int i = 0; i < length; i++) {
+scanf("%d", &input);
+if (input != sequence[i]) {
 return 0; 
 }
 }
-}
 return 1; 
+}
+int main() {
+int sequence[MAX_SEQUENCE];
+int length = 1;
+int score = 0;
+srand(time(NULL)); 
+while (1) {
+generateSequence(sequence, length);
+displaySequence(sequence, length);
+if (getUserInput(sequence, length)) {
+printf("Correct!\n");
+score++;
+length++;
+} else {
+printf("Incorrect! Game Over.\n");
+printf("Your score: %d\n", score);
+break;
+}
+}
+return 0;
+}
 }
